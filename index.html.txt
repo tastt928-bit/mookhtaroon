@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مختارون من عند الله</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0D1B0D 0%, #1A2E1A 100%);
+            color: #FFFFFF;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .home-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .logo-section { text-align: center; padding: 30px 0; }
+        .logo-icon { font-size: 60px; margin-bottom: 10px; }
+        .app-title { font-size: 28px; font-weight: bold; color: #FFD700; margin-bottom: 5px; }
+        .app-subtitle { font-size: 14px; color: #B0B0B0; }
+
+        .gold-line {
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+            margin: 20px 0;
+        }
+
+        .section-title { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+        .section-subtitle { font-size: 12px; color: #B0B0B0; margin-bottom: 20px; }
+
+        .groups-grid {
+            display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .group-card {
+            width: 160px; height: 160px; background: #1A2E1A;
+            border: 2px solid; border-radius: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s ease; padding: 20px; text-align: center;
+        }
+        .group-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .group-card.anbiya { border-color: #FFD700; }
+        .group-card.aimmah { border-color: #C41E3A; }
+        .group-icon { font-size: 50px; margin-bottom: 10px; }
+        .group-name { font-size: 18px; font-weight: bold; }
+
+        .stats-bar {
+            display: flex; justify-content: space-around; background: #1A2E1A;
+            border-radius: 20px; padding: 20px; margin: 20px 0;
+            width: 100%; max-width: 400px;
+        }
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 30px; font-weight: bold; }
+        .stat-number.gold { color: #FFD700; }
+        .stat-number.red { color: #C41E3A; }
+        .stat-number.green { color: #D4AF37; }
+        .stat-label { font-size: 12px; color: #B0B0B0; }
+        .stat-divider { width: 2px; height: 50px; background: #1A5F2A; }
+
+        .footer { text-align: center; padding: 20px; margin-top: 20px; }
+        .footer-title { font-size: 14px; font-weight: bold; color: #B0B0B0; margin-bottom: 5px; }
+        .footer-text { font-size: 10px; color: #666; }
+
+        .list-screen, .detail-screen { display: none; flex-direction: column; min-height: 100vh; }
+        .list-screen.active, .detail-screen.active { display: flex; }
+
+        .header {
+            display: flex; align-items: center; padding: 15px 20px;
+            background: rgba(26, 47, 26, 0.95); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .back-btn {
+            background: none; border: none; color: #FFFFFF;
+            font-size: 24px; cursor: pointer; padding: 5px;
+        }
+        .header-title { flex: 1; text-align: center; font-size: 22px; font-weight: bold; color: #FFD700; }
+        .header-icon { font-size: 28px; }
+
+        .persons-list { padding: 15px; overflow-y: auto; flex: 1; }
+
+        .person-card {
+            display: flex; align-items: center; background: #1A2E1A;
+            border: 1px solid #1A5F2A; border-radius: 15px;
+            padding: 15px; margin-bottom: 10px; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .person-card:hover { border-color: #D4AF37; transform: translateX(-5px); }
+        .person-avatar {
+            width: 60px; height: 60px; background: #1A5F2A; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: bold; color: #FFD700;
+            margin-left: 15px; flex-shrink: 0;
+        }
+        .person-info { flex: 1; }
+        .person-name { font-size: 18px; font-weight: bold; margin-bottom: 3px; }
+        .person-laquab { font-size: 12px; color: #B0B0B0; margin-bottom: 5px; }
+        .person-location { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #D4AF37; }
+        .person-arrow { font-size: 20px; color: #D4AF37; }
+
+        .detail-content { padding: 20px; overflow-y: auto; flex: 1; }
+        .detail-avatar {
+            width: 150px; height: 150px; background: #1A5F2A; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 60px; font-weight: bold; color: #FFD700;
+            margin: 20px auto; border: 3px solid #D4AF37;
+        }
+        .detail-laquab { text-align: center; font-size: 16px; color: #D4AF37; margin-bottom: 20px; }
+
+        .info-section {
+            background: #1A2E1A; border-radius: 20px; padding: 20px; margin-bottom: 15px;
+        }
+        .section-header {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 15px; padding-bottom: 10px;
+            border-bottom: 1px solid rgba(196, 30, 58, 0.3);
+        }
+        .section-header-icon { font-size: 24px; }
+        .section-header-title { font-size: 18px; font-weight: bold; color: #C41E3A; }
+        .section-line { flex: 1; height: 2px; background: rgba(196, 30, 58, 0.3); }
+
+        .info-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .info-icon { font-size: 20px; width: 30px; text-align: center; }
+        .info-label { font-weight: bold; color: #FFD700; min-width: 80px; }
+        .info-value { flex: 1; color: #FFFFFF; }
+
+        .family-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .family-card { background: #0D1B0D; border-radius: 10px; padding: 12px; text-align: center; }
+        .family-name { font-weight: bold; font-size: 14px; margin-bottom: 3px; }
+        .family-info { font-size: 11px; color: #B0B0B0; }
+
+        .book-card, .source-card { background: #0D1B0D; border-radius: 10px; padding: 12px; margin-bottom: 8px; }
+        .book-title, .source-book { font-weight: bold; font-size: 14px; margin-bottom: 3px; }
+        .book-author, .source-author { font-size: 12px; color: #B0B0B0; }
+
+        .summary-text { line-height: 1.8; text-align: justify; font-size: 14px; }
+
+        .loading {
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; font-size: 20px; flex-direction: column;
+        }
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid #1A5F2A;
+            border-top: 4px solid #FFD700; border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0D1B0D; }
+        ::-webkit-scrollbar-thumb { background: #1A5F2A; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        جاري التحميل...
+    </div>
+
+    <div id="homeScreen" class="home-screen" style="display: none;">
+        <div class="logo-section">
+            <div class="logo-icon">🕌</div>
+            <div class="app-title">مختارون من عند الله</div>
+            <div class="app-subtitle">موسوعة الأنبياء والأئمة المعصومين</div>
+        </div>
+        <div class="gold-line"></div>
+        <div class="section-title">المجموعات</div>
+        <div class="section-subtitle">اختر المجموعة للتصفح</div>
+        <div class="groups-grid">
+            <div class="group-card anbiya" onclick="showList('anbiya')">
+                <div class="group-icon">☀️</div>
+                <div class="group-name">الأنبياء<br>والرسل</div>
+            </div>
+            <div class="group-card aimmah" onclick="showList('aimmah')">
+                <div class="group-icon">⭐</div>
+                <div class="group-name">الأئمة<br>المعصومون</div>
+            </div>
+        </div>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number gold">6</div>
+                <div class="stat-label">أنبياء</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="stat-number red">12</div>
+                <div class="stat-label">إمام</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="stat-number green">18</div>
+                <div class="stat-label">شخصية</div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="footer-title">المصادر المعتمدة</div>
+            <div class="footer-text">تفسير الميزان - بحار الأنوار - الكافي - الإرشاد - نهج البلاغة</div>
+        </div>
+    </div>
+
+    <div id="listScreen" class="list-screen">
+        <div class="header">
+            <button class="back-btn" onclick="showHome()">→</button>
+            <div class="header-title" id="listTitle">الأنبياء والرسل</div>
+            <div class="header-icon" id="listIcon">☀️</div>
+        </div>
+        <div class="persons-list" id="personsList"></div>
+    </div>
+
+    <div id="detailScreen" class="detail-screen">
+        <div class="header">
+            <button class="back-btn" onclick="showList(currentGroup)">→</button>
+            <div class="header-title" id="detailTitle">التفاصيل</div>
+            <button class="back-btn" style="font-size: 20px;">♡</button>
+        </div>
+        <div class="detail-content" id="detailContent"></div>
+    </div>
+
+    <script>
+
+        const DATA = {
+            anbiya: [
+                {
+                    id: "adam", name: "آدم", laqab: "أبو البشر، خليفة الله في الأرض",
+                    kunyah: "أبو البشر", birth_date: "يوم الجمعة", death_date: "غير معروف بالضبط",
+                    age: 930, birthplace: "الجنة", burial_place: "جبل أبي قبيس، مكة المكرمة",
+                    father: "لا أب (خلقه الله بيده)", mother: "لا أم",
+                    spouses: [{name: "حواء", info: "خُلقت من ضلعه الأيسر، أول امرأة"}],
+                    children: [
+                        {name: "قابيل (قايين)", info: "أول من قتل على وجه الأرض"},
+                        {name: "هابيل (هابيل)", info: "أول شهيد في الإسلام"},
+                        {name: "شيث (شيث)", info: "منه انتهى نسب البشر، وقيل إنه نبي"}
+                    ],
+                    books: [{title: "صحيفة آدم", author: "آدم (عليه السلام)"}],
+                    sources: [
+                        {book: "تفسير الميزان", author: "السيد محمد حسين الطباطبائي"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "الكافي", author: "الكليني"}
+                    ],
+                    summary: "آدم عليه السلام أول الأنبياء والمرسلين، خلقه الله بيده الكريمة في الجنة من صلصال من حمإ مسنون، ونفخ فيه من روحه، وعلَّمه الأسماء كلها، وسجد له الملائكة تكريماً.",
+                    ziyarat: "جبل أبي قبيس - مكة المكرمة"
+                },
+                {
+                    id: "nooh", name: "نوح", laqab: "النبي الأم، رسول الله إلى بنيه",
+                    kunyah: "أبو سام", birth_date: "غير معروف بالضبط", death_date: "غير معروف بالضبط",
+                    age: 2500, birthplace: "العراق (المفترض)", burial_place: "النجف (بحسب بعض الروايات)",
+                    father: "لمك بن متوشلخ", mother: "غير معروفة",
+                    spouses: [{name: "ناموسة / واغلة", info: "أم سام ويافث وحام"}],
+                    children: [
+                        {name: "سام", info: "جد العرب والعجم"},
+                        {name: "حام", info: "جد السودان"},
+                        {name: "يافث", info: "جد الترك والفرس"},
+                        {name: "كان", info: "غرق في الطوفان، كافر"}
+                    ],
+                    books: [],
+                    sources: [
+                        {book: "تفسير الميزان", author: "الطباطبائي"},
+                        {book: "بحار الأنوار", author: "المجلسي"}
+                    ],
+                    summary: "نوح عليه السلام أول رسول بعثه الله إلى قومه، دعاهم 950 سنة، وبنى السفينة التي حملت المؤمنين والحيوانات، وعاش 2500 سنة.",
+                    ziyarat: "النجف / الكوفة"
+                },
+                {
+                    id: "ibrahim", name: "إبراهيم", laqab: "خليل الله، أبو الأنبياء، الإمام",
+                    kunyah: "أبو إسماعيل، أبو إسحاق", birth_date: "غير معروف بالضبط", death_date: "غير معروف بالضبط",
+                    age: 195, birthplace: "أور الكلدانيين (العراق)", burial_place: "الخليل (فلسطين)",
+                    father: "آزر (تارخ)", mother: "غير معروفة",
+                    spouses: [
+                        {name: "سارة", info: "أم إسحاق"},
+                        {name: "هاجر", info: "أم إسماعيل"}
+                    ],
+                    children: [
+                        {name: "إسماعيل", info: "الذبيح، أبو العرب، جد النبي ﷺ"},
+                        {name: "إسحاق", info: "نبي، أبو يعقوب"},
+                        {name: "مديان", info: "من زوجة أخرى"}
+                    ],
+                    books: [],
+                    sources: [
+                        {book: "تفسير الميزان", author: "الطباطبائي"},
+                        {book: "بحار الأنوار", author: "المجلسي"}
+                    ],
+                    summary: "إبراهيم عليه السلام خليل الله وأبو الأنبياء، ولد في العراق، دعا قومه إلى توحيد الله، ألقي في النار فكانت برداً وسلاماً، وبنى الكعبة مع ابنه إسماعيل.",
+                    ziyarat: "الحرم الإبراهيمي - الخليل (فلسطين)"
+                },
+                {
+                    id: "musa", name: "موسى", laqab: "كليم الله، نبي الله العظيم",
+                    kunyah: "أبو هارون", birth_date: "غير معروف بالضبط", death_date: "غير معروف بالضبط",
+                    age: 120, birthplace: "مصر", burial_place: "جبل نبو (الأردن)",
+                    father: "عمران (عمران)", mother: "يوكابد",
+                    spouses: [{name: "صفورة بنت شعيب", info: "ابنة نبي مدين"}],
+                    children: [
+                        {name: "جرشوم", info: ""},
+                        {name: "أليعازر", info: ""}
+                    ],
+                    books: [{title: "التوراة", author: "موسى (عليه السلام)"}],
+                    sources: [
+                        {book: "تفسير الميزان", author: "الطباطبائي"},
+                        {book: "بحار الأنوار", author: "المجلسي"}
+                    ],
+                    summary: "موسى عليه السلام كليم الله، ولد في مصر في عهد فرعون، أظهر معجزات عظيمة، فلق البحر، وأنزل التوراة.",
+                    ziyarat: "جبل نبو - الأردن"
+                },
+                {
+                    id: "esa", name: "عيسى", laqab: "روح الله، كلمة الله، المسيح",
+                    kunyah: "ابن مريم", birth_date: "غير معروف بالضبط", death_date: "لم يمت بعد (رفعه الله)",
+                    age: 33, birthplace: "بيت لحم (فلسطين)", burial_place: "لم يُدفن (رفعه الله إليه)",
+                    father: "لا أب (ولد بلا أب)", mother: "مريم بنت عمران",
+                    spouses: [], children: [],
+                    books: [{title: "الإنجيل", author: "عيسى (عليه السلام)"}],
+                    sources: [
+                        {book: "تفسير الميزان", author: "الطباطبائي"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "كمال الدين وتمام النعمة", author: "الصدوق"}
+                    ],
+                    summary: "عيسى عليه السلام روح الله وكلمة الله، ولد من أم عذراء بلا أب، أظهر معجزات عظيمة، رفعه الله إلى السماء حياً، وسينزل قبل يوم القيامة.",
+                    ziyarat: "سينزل في دمشق عند نزوله"
+                },
+                {
+                    id: "muhammad", name: "محمد", laqab: "رسول الله، خاتم الأنبياء، الحبيب، المختار",
+                    kunyah: "أبو القاسم، أبو إبراهيم، أبو عبد الله",
+                    birth_date: "17 ربيع الأول عام الفيل", death_date: "28 صفر 11 هـ",
+                    age: 63, birthplace: "مكة المكرمة", burial_place: "المدينة المنورة (في بيت عائشة)",
+                    father: "عبد الله بن عبد المطلب", mother: "آمنة بنت وهب",
+                    spouses: [
+                        {name: "خديجة بنت خويلد", info: "أول زوجاته، أم فاطمة"},
+                        {name: "سودة بنت زمعة", info: ""},
+                        {name: "عائشة بنت أبي بكر", info: "أحب نسائه إليه"},
+                        {name: "حفصة بنت عمر", info: ""},
+                        {name: "زينب بنت خزيمة", info: "أم المساكين"},
+                        {name: "أم سلمة", info: ""},
+                        {name: "زينب بنت جحش", info: ""},
+                        {name: "جويرية بنت الحارث", info: ""},
+                        {name: "أم حبيبة", info: ""},
+                        {name: "صفية بنت حيي", info: ""},
+                        {name: "ميمونة بنت الحارث", info: "آخر زوجاته"}
+                    ],
+                    children: [
+                        {name: "القاسم", info: "مات صغيراً"},
+                        {name: "عبد الله", info: "الطيب / الطاهر، مات صغيراً"},
+                        {name: "إبراهيم", info: "من مارية القبطية، مات صغيراً"},
+                        {name: "فاطمة الزهراء", info: "أحب الناس إليه، أم الأئمة"},
+                        {name: "زينب", info: ""},
+                        {name: "رقية", info: ""},
+                        {name: "أم كلثوم", info: ""}
+                    ],
+                    books: [{title: "القرآن الكريم", author: "محمد ﷺ (وحي من الله)"}],
+                    sources: [
+                        {book: "تفسير الميزان", author: "الطباطبائي"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "الكافي", author: "الكليني"},
+                        {book: "الإرشاد", author: "المفيد"}
+                    ],
+                    summary: "محمد ﷺ خاتم الأنبياء والمرسلين، أفضل الخلق أجمعين، ولد في مكة، بعثه الله رحمة للعالمين، نزل عليه القرآن، هاجر إلى المدينة، فتح مكة، توفي عن عمر 63 سنة.",
+                    ziyarat: "الروضة الشريفة - المدينة المنورة"
+                }
+            ],
+            aimmah: [
+                {
+                    id: "imam_ali", name: "علي", laqab: "أمير المؤمنين، الإمام الأول، وصي رسول الله",
+                    kunyah: "أبو الحسن، أبو الحسين، أبو محمد",
+                    birth_date: "13 رجب 30 قبل الهجرة", death_date: "21 رمضان 40 هـ",
+                    age: 63, birthplace: "داخل الكعبة المشرفة - مكة المكرمة", burial_place: "النجف الأشرف - العراق",
+                    father: "أبو طالب بن عبد المطلب", mother: "فاطمة بنت أسد",
+                    imamate_period: "30 سنة (11-40 هـ)", predecessor: "رسول الله محمد ﷺ", successor: "الحسن المجتبى (عليه السلام)",
+                    spouses: [
+                        {name: "فاطمة الزهراء", info: "بنت رسول الله ﷺ، أم الحسن والحسين"},
+                        {name: "أم البنين", info: "أم العباس وجعفر وعثمان وعبد الله"},
+                        {name: "الصهباء", info: ""},
+                        {name: "خولة", info: ""},
+                        {name: "ليلى بنت مسعود", info: ""}
+                    ],
+                    children: [
+                        {name: "الحسن المجتبى", info: "الإمام الثاني"},
+                        {name: "الحسين الشهيد", info: "الإمام الثالث"},
+                        {name: "محمد الحنفية", info: "من خولة"},
+                        {name: "محمد الأوسط", info: ""},
+                        {name: "عباس", info: "ساقي كربلاء، أبو الفضل"},
+                        {name: "جعفر", info: "من أم البنين"},
+                        {name: "عثمان", info: "من أم البنين"},
+                        {name: "عبد الله", info: "من أم البنين"},
+                        {name: "أم كلثوم", info: ""},
+                        {name: "زينب الصغرى", info: ""},
+                        {name: "رقية", info: ""}
+                    ],
+                    books: [
+                        {title: "نهج البلاغة", author: "السيد الرضي (جمع)"},
+                        {title: "دعاء كميل", author: "علي (عليه السلام)"},
+                        {title: "دعاء الصباح", author: "علي (عليه السلام)"},
+                        {title: "خطبة القاصعة", author: "علي (عليه السلام)"},
+                        {title: "خطبة الشقشقية", author: "علي (عليه السلام)"}
+                    ],
+                    sources: [
+                        {book: "الإرشاد", author: "الشيخ المفيد"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "أعيان الشيعة", author: "السيد محسن الأمين"},
+                        {book: "الكافي", author: "الكليني"},
+                        {book: "نهج البلاغة", author: "السيد الرضي"}
+                    ],
+                    summary: "علي بن أبي طالب (عليه السلام) أمير المؤمنين وأول الأئمة الاثني عشر، ولد داخل الكعبة المشرفة، أول من آمن برسول الله ﷺ، صاحبه في الغار، زوج فاطمة الزهراء، باب مدينة العلم، استشهد بالسيف المسموم في الكوفة.",
+                    ziyarat: "النجف الأشرف - مرقد الإمام علي"
+                },
+                {
+                    id: "imam_hasan", name: "الحسن", laqab: "المجتبى، السبط الأكبر، سيد شباب أهل الجنة",
+                    kunyah: "أبو محمد", birth_date: "15 رمضان 3 هـ", death_date: "28 صفر 50 هـ",
+                    age: 47, birthplace: "المدينة المنورة", burial_place: "المدينة المنورة (البقيع)",
+                    father: "علي بن أبي طالب (عليه السلام)", mother: "فاطمة الزهراء (عليها السلام)",
+                    imamate_period: "10 سنوات (40-50 هـ)", predecessor: "علي بن أبي طالب (عليه السلام)", successor: "الحسين الشهيد (عليه السلام)",
+                    spouses: [
+                        {name: "جعدة بنت الأشعث", info: "قيل إنها سمَّته"},
+                        {name: "أم إسحاق بنت طلحة", info: ""},
+                        {name: "هند بنت عبد الرحمن", info: ""}
+                    ],
+                    children: [
+                        {name: "محمد (الحسن المثنى)", info: "جد السادة الحسنيين"},
+                        {name: "القاسم", info: ""},
+                        {name: "عبد الله", info: ""},
+                        {name: "أبو بكر", info: ""},
+                        {name: "فاطمة", info: ""},
+                        {name: "أم الحسن", info: ""}
+                    ],
+                    books: [],
+                    sources: [
+                        {book: "الإرشاد", author: "المفيد"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "أعيان الشيعة", author: "الأمين"}
+                    ],
+                    summary: "الحسن المجتبى (عليه السلام) الإمام الثاني، سبط رسول الله ﷺ، سيد شباب أهل الجنة، أشبه الناس بالنبي ﷺ، استشهد مسموماً في البقيع.",
+                    ziyarat: "البقيع - المدينة المنورة"
+                },
+                {
+                    id: "imam_hussein", name: "الحسين", laqab: "سيد الشهداء، أبو عبد الله، الثالث من أصحاب الكساء",
+                    kunyah: "أبو عبد الله، أبو علي", birth_date: "3 شعبان 4 هـ", death_date: "10 محرم 61 هـ",
+                    age: 57, birthplace: "المدينة المنورة", burial_place: "كربلاء المقدسة - العراق",
+                    father: "علي بن أبي طالب (عليه السلام)", mother: "فاطمة الزهراء (عليها السلام)",
+                    imamate_period: "10 سنوات (50-61 هـ)", predecessor: "الحسن المجتبى (عليه السلام)", successor: "علي السجاد (عليه السلام)",
+                    spouses: [
+                        {name: "شهر بانو (شاه زنان)", info: "ابنة يزدجرد الفارسي"},
+                        {name: "رباب بنت إمرئ القيس", info: "أم السجاد"},
+                        {name: "أم إسحاق", info: ""}
+                    ],
+                    children: [
+                        {name: "علي السجاد", info: "الإمام الرابع"},
+                        {name: "علي الأكبر", info: "شهيد كربلاء، أشبه الناس بالنبي ﷺ"},
+                        {name: "جعفر", info: ""},
+                        {name: "عبد الله (الرضيع)", info: "شهيد كربلاء، رُمي بالسهم في حجر أبيه"},
+                        {name: "محمد", info: ""},
+                        {name: "العباس", info: ""},
+                        {name: "إبراهيم", info: ""},
+                        {name: "عثمان", info: ""},
+                        {name: "أبو بكر", info: ""},
+                        {name: "سكينة", info: "شهيدة كربلاء (بعض الروايات)"},
+                        {name: "فاطمة الصغرى", info: ""},
+                        {name: "زينب الكبرى", info: "سيدة كربلاء، خطيبة الكوفة"},
+                        {name: "أم كلثوم", info: ""}
+                    ],
+                    books: [],
+                    sources: [
+                        {book: "الإرشاد", author: "المفيد"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "أعيان الشيعة", author: "الأمين"},
+                        {book: "مقتل الحسين", author: "أبي مخنف"}
+                    ],
+                    summary: "الحسين الشهيد (عليه السلام) الإمام الثالث، سيد الشهداء، سبط رسول الله ﷺ، ثار على يزيد بن معاوية، استشهد في كربلاء مع 72 من أصحابه وأهل بيته.",
+                    ziyarat: "كربلاء المقدسة - العراق"
+                },
+                {
+                    id: "imam_sajjad", name: "علي السجاد", laqab: "السجاد، زين العابدين، سيد الساجدين",
+                    kunyah: "أبو محمد", birth_date: "5 شعبان 38 هـ", death_date: "25 محرم 95 هـ",
+                    age: 57, birthplace: "المدينة المنورة", burial_place: "البقيع - المدينة المنورة",
+                    father: "الحسين الشهيد (عليه السلام)", mother: "شهر بانو (شاه زنان) بنت يزدجرد",
+                    imamate_period: "34 سنة (61-95 هـ)", predecessor: "الحسين الشهيد (عليه السلام)", successor: "محمد الباقر (عليه السلام)",
+                    spouses: [{name: "فاطمة بنت الحسن المجتبى", info: "أم محمد الباقر"}],
+                    children: [
+                        {name: "محمد الباقر", info: "الإمام الخامس"},
+                        {name: "زيد الشهيد", info: "ثار على الأمويين"},
+                        {name: "عبد الله", info: ""},
+                        {name: "الحسن", info: ""},
+                        {name: "علي", info: ""},
+                        {name: "عمر", info: ""},
+                        {name: "حسين", info: ""},
+                        {name: "خديجة", info: ""},
+                        {name: "عليّة", info: ""}
+                    ],
+                    books: [
+                        {title: "الصحيفة السجادية", author: "علي السجاد (عليه السلام)"},
+                        {title: "رسالة الحقوق", author: "علي السجاد (عليه السلام)"}
+                    ],
+                    sources: [
+                        {book: "الإرشاد", author: "المفيد"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "أعيان الشيعة", author: "الأمين"}
+                    ],
+                    summary: "علي السجاد (عليه السلام) الإمام الرابع، زين العابدين، نجا من كربلاء مريضاً، صاحب الصحيفة السجادية، استشهد مسموماً.",
+                    ziyarat: "البقيع - المدينة المنورة"
+                },
+                {
+                    id: "imam_baqir", name: "محمد الباقر", laqab: "الباقر، العالم، الفقيه",
+                    kunyah: "أبو جعفر", birth_date: "1 رجب 57 هـ", death_date: "7 ذي الحجة 114 هـ",
+                    age: 57, birthplace: "المدينة المنورة", burial_place: "البقيع - المدينة المنورة",
+                    father: "علي السجاد (عليه السلام)", mother: "فاطمة بنت الحسن المجتبى",
+                    imamate_period: "19 سنة (95-114 هـ)", predecessor: "علي السجاد (عليه السلام)", successor: "جعفر الصادق (عليه السلام)",
+                    spouses: [{name: "أم فروة", info: "أم جعفر الصادق"}],
+                    children: [
+                        {name: "جعفر الصادق", info: "الإمام السادس"},
+                        {name: "إبراهيم", info: ""},
+                        {name: "علي", info: ""},
+                        {name: "عبد الله", info: ""},
+                        {name: "عبيد الله", info: ""},
+                        {name: "زينب", info: ""},
+                        {name: "أم سلمة", info: ""}
+                    ],
+                    books: [],
+                    sources: [
+                        {book: "الإرشاد", author: "المفيد"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "أعيان الشيعة", author: "الأمين"}
+                    ],
+                    summary: "محمد الباقر (عليه السلام) الإمام الخامس، شقّ علماً، أسس أول مدرسة فقهية في الإسلام، أستاذ كبار العلماء، استشهد مسموماً.",
+                    ziyarat: "البقيع - المدينة المنورة"
+                },
+                {
+                    id: "imam_sadiq", name: "جعفر الصادق", laqab: "الصادق، الفقيه، العالم، المحدث",
+                    kunyah: "أبو عبد الله، أبو إسماعيل", birth_date: "17 ربيع الأول 83 هـ", death_date: "25 شوال 148 هـ",
+                    age: 65, birthplace: "المدينة المنورة", burial_place: "البقيع - المدينة المنورة",
+                    father: "محمد الباقر (عليه السلام)", mother: "أم فروة",
+                    imamate_period: "34 سنة (114-148 هـ)", predecessor: "محمد الباقر (عليه السلام)", successor: "موسى الكاظم (عليه السلام)",
+                    spouses: [
+                        {name: "حميدة", info: "أم موسى الكاظم"},
+                        {name: "أم إسماعيل", info: ""}
+                    ],
+                    children: [
+                        {name: "موسى الكاظم", info: "الإمام السابع"},
+                        {name: "إسماعيل", info: "توفى قبل أبيه"},
+                        {name: "عبد الله الأفطح", info: ""},
+                        {name: "محمد", info: ""},
+                        {name: "علي", info: ""},
+                        {name: "عباس", info: ""},
+                        {name: "فاطمة", info: ""}
+                    ],
+                    books: [],
+                    sources: [
+                        {book: "الإرشاد", author: "المفيد"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "أعيان الشيعة", author: "الأمين"}
+                    ],
+                    summary: "جعفر الصادق (عليه السلام) الإمام السادس، أكبر مدرسة علمية في الإسلام، مؤسس المذهب الجعفري، أستاذ 4000 عالم، استشهد مسموماً.",
+                    ziyarat: "البقيع - المدينة المنورة"
+                },
+                {
+                    id: "imam_kadhim", name: "موسى الكاظم", laqab: "الكاظم، العبد الصالح، باب الحوائج",
+                    kunyah: "أبو الحسن، أبو إبراهيم", birth_date: "7 صفر 128 هـ", death_date: "25 رجب 183 هـ",
+                    age: 55, birthplace: "الأبواء (بين مكة والمدينة)", burial_place: "كاظمية - بغداد (العراق)",
+                    father: "جعفر الصادق (عليه السلام)", mother: "حميدة",
+                    imamate_period: "35 سنة (148-183 هـ)", predecessor: "جعفر الصادق (عليه السلام)", successor: "علي الرضا (عليه السلام)",
+                    spouses: [{name: "نجمة", info: "أم علي الرضا"}],
+                    children: [
+                        {name: "علي الرضا", info: "الإمام الثامن"},
+                        {name: "إبراهيم", info: ""},
+                        {name: "عباس", info: ""},
+                        {name: "إسماعيل", info: ""},
+                        {name: "حمدان", info: ""},
+                        {name: "أحمد", info: ""},
+                        {name: "محمد", info: ""},
+                        {name: "حسين", info: ""},
+                        {name: "فاطمة", info: ""}
+                    ],
+                    books: [],
+                    sources: [
+                        {book: "الإرشاد", author: "المفيد"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "أعيان الشيعة", author: "الأمين"}
+                    ],
+                    summary: "موسى الكاظم (عليه السلام) الإمام السابع، الكاظم، باب الحوائج، سجن 14 سنة في عهد هارون الرشيد، استشهد مسموماً في السجن.",
+                    ziyarat: "الكاظمية - بغداد (العراق)"
+                },
+                {
+                    id: "imam_redha", name: "علي الرضا", laqab: "الرضا، الغريب، الثامن من أصحاب الكساء",
+                    kunyah: "أبو الحسن", birth_date: "11 ذي القعدة 148 هـ", death_date: "آخر صفر 203 هـ",
+                    age: 55, birthplace: "المدينة المنورة", burial_place: "مشهد المقدسة - إيران",
+                    father: "موسى الكاظم (عليه السلام)", mother: "نجمة",
+                    imamate_period: "20 سنة (183-203 هـ)", predecessor: "موسى الكاظم (عليه السلام)", successor: "محمد الجواد (عليه السلام)",
+                    spouses: [{name: "سبيكة (خيزران)", info: "أم محمد الجواد"}],
+                    children: [
+                        {name: "محمد الجواد", info: "الإمام التاسع"},
+                        {name: "إبراهيم", info: ""},
+                        {name: "الحسن", info: ""},
+                        {name: "جعفر", info: ""},
+                        {name: "الحسين", info: ""},
+                        {name: "العباس", info: ""},
+                        {name: "فاطمة", info: ""}
+                    ],
+                    books: [],
+                    sources: [
+                        {book: "الإرشاد", author: "المفيد"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "أعيان الشيعة", author: "الأمين"}
+                    ],
+                    summary: "علي الرضا (عليه السلام) الإمام الثامن، الرضا، الغريب، ولي العهد على مضض، استشهد مسموماً في طوس (مشهد).",
+                    ziyarat: "مشهد المقدسة - إيران"
+                },
+                {
+                    id: "imam_jawad", name: "محمد الجواد", laqab: "الجواد، التقي، القانع",
+                    kunyah: "أبو جعفر", birth_date: "10 رجب 195 هـ", death_date: "ذي القعدة 220 هـ",
+                    age: 25, birthplace: "المدينة المنورة", burial_place: "الكاظمية - بغداد (العراق)",
+                    father: "علي الرضا (عليه السلام)", mother: "سبيكة (خيزران)",
+                    imamate_period: "17 سنة (203-220 هـ)", predecessor: "علي الرضا (عليه السلام)", successor: "علي الهادي (عليه السلام)",
+                    spouses: [
+                        {name: "أم الفضل بنت المأمون", info: ""},
+                        {name: "سمانة (خيزران)", info: "أم علي الهادي"}
+                    ],
+                    children: [
+                        {name: "علي الهادي", info: "الإمام العاشر"},
+                        {name: "موسى المبرقع", info: ""},
+                        {name: "إسماعيل", info: ""},
+                        {name: "الحسن", info: ""},
+                        {name: "أحمد", info: ""},
+                        {name: "حسين", info: ""},
+                        {name: "فاطمة", info: ""}
+                    ],
+                    books: [],
+                    sources: [
+                        {book: "الإرشاد", author: "المفيد"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "أعيان الشيعة", author: "الأمين"}
+                    ],
+                    summary: "محمد الجواد (عليه السلام) الإمام التاسع، أصغر إمام في السن، كريم جواد، استشهد مسموماً في بغداد عن عمر 25 سنة.",
+                    ziyarat: "الكاظمية - بغداد (العراق)"
+                },
+                {
+                    id: "imam_hadi", name: "علي الهادي", laqab: "الهادي، النقي، العسكري",
+                    kunyah: "أبو الحسن", birth_date: "15 ذي الحجة 212 هـ", death_date: "3 رجب 254 هـ",
+                    age: 42, birthplace: "المدينة المنورة (صريا)", burial_place: "سامراء - العراق",
+                    father: "محمد الجواد (عليه السلام)", mother: "سمانة (خيزران)",
+                    imamate_period: "34 سنة (220-254 هـ)", predecessor: "محمد الجواد (عليه السلام)", successor: "الحسن العسكري (عليه السلام)",
+                    spouses: [{name: "حذام (سوسن)", info: "أم الحسن العسكري"}],
+                    children: [
+                        {name: "الحسن العسكري", info: "الإمام الحادي عشر"},
+                        {name: "محمد", info: ""},
+                        {name: "جعفر", info: ""},
+                        {name: "عائشة", info: ""}
+                    ],
+                    books: [],
+                    sources: [
+                        {book: "الإرشاد", author: "المفيد"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "أعيان الشيعة", author: "الأمين"}
+                    ],
+                    summary: "علي الهادي (عليه السلام) الإمام العاشر، نُقل إلى سامراء تحت الإقامة الجبرية، استشهد مسموماً في سامراء.",
+                    ziyarat: "سامراء - العراق"
+                },
+                {
+                    id: "imam_askari", name: "الحسن العسكري", laqab: "العسكري، الزكي، الهادي",
+                    kunyah: "أبو محمد", birth_date: "8 ربيع الثاني 232 هـ", death_date: "8 ربيع الأول 260 هـ",
+                    age: 28, birthplace: "المدينة المنورة", burial_place: "سامراء - العراق",
+                    father: "علي الهادي (عليه السلام)", mother: "حذام (سوسن)",
+                    imamate_period: "6 سنوات (254-260 هـ)", predecessor: "علي الهادي (عليه السلام)", successor: "محمد المهدي (عج)",
+                    spouses: [{name: "نرجس (سوسن / ريحانة)", info: "أم محمد المهدي"}],
+                    children: [{name: "محمد المهدي", info: "الإمام الثاني عشر، المهدي المنتظر"}],
+                    books: [],
+                    sources: [
+                        {book: "الإرشاد", author: "المفيد"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "أعيان الشيعة", author: "الأمين"}
+                    ],
+                    summary: "الحسن العسكري (عليه السلام) الإمام الحادي عشر، أبو المهدي المنتظر، عاش تحت المراقبة الشديدة، استشهد مسموماً في سامراء.",
+                    ziyarat: "سامراء - العراق"
+                },
+                {
+                    id: "imam_mahdi", name: "محمد المهدي", laqab: "المهدي، القائم، الحجة، صاحب الزمان، المنتظر",
+                    kunyah: "أبو القاسم، أبو صالح", birth_date: "15 شعبان 255 هـ", death_date: "حيٌّ (في غيبته)",
+                    age: "حيٌّ (أكثر من 1100 سنة)", birthplace: "سامراء - العراق", burial_place: "غير معروف (في غيبته)",
+                    father: "الحسن العسكري (عليه السلام)", mother: "نرجس (سوسن / ريحانة)",
+                    imamate_period: "منذ 260 هـ حتى الآن (أكثر من 1100 سنة)", predecessor: "الحسن العسكري (عليه السلام)", successor: "لا يوجد (آخر الأئمة)",
+                    spouses: [], children: [],
+                    books: [],
+                    sources: [
+                        {book: "الإرشاد", author: "المفيد"},
+                        {book: "بحار الأنوار", author: "المجلسي"},
+                        {book: "أعيان الشيعة", author: "الأمين"},
+                        {book: "كمال الدين وتمام النعمة", author: "الصدوق"}
+                    ],
+                    summary: "محمد المهدي (عج) الإمام الثاني عشر والأخير، صاحب الزمان، حيٌّ في غيبته الكبرى، سيعود ليملأ الأرض قسطاً وعدلاً كما مُلئت ظلماً وجوراً.",
+                    ziyarat: "سامراء - العراق (سرداب الغيبة)"
+                }
+            ]
+        };
+
+        let currentGroup = 'anbiya';
+        let currentPerson = null;
+
+        function showScreen(screenName) {
+            document.querySelectorAll('.home-screen, .list-screen, .detail-screen').forEach(s => {
+                s.classList.remove('active');
+                s.style.display = 'none';
+            });
+            document.getElementById(screenName).style.display = 'flex';
+            if (screenName !== 'homeScreen') {
+                document.getElementById(screenName).classList.add('active');
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function showHome() {
+            showScreen('homeScreen');
+        }
+
+        function showList(group) {
+            currentGroup = group;
+            const persons = DATA[group];
+            const title = group === 'anbiya' ? 'الأنبياء والرسل' : 'الأئمة المعصومون';
+            const icon = group === 'anbiya' ? '☀️' : '⭐';
+
+            document.getElementById('listTitle').textContent = title;
+            document.getElementById('listIcon').textContent = icon;
+
+            const listContainer = document.getElementById('personsList');
+            listContainer.innerHTML = persons.map(p => `
+                <div class="person-card" onclick="showDetail('${p.id}')">
+                    <div class="person-avatar">${p.name[0]}</div>
+                    <div class="person-info">
+                        <div class="person-name">${p.name}</div>
+                        <div class="person-laquab">${p.laqab}</div>
+                        <div class="person-location">
+                            <span>📍</span>
+                            <span>${p.birthplace}</span>
+                        </div>
+                    </div>
+                    <div class="person-arrow">←</div>
+                </div>
+            `).join('');
+
+            showScreen('listScreen');
+        }
+
+        function showDetail(personId) {
+            const allPersons = [...DATA.anbiya, ...DATA.aimmah];
+            const person = allPersons.find(p => p.id === personId);
+            if (!person) return;
+
+            currentPerson = person;
+            document.getElementById('detailTitle').textContent = person.name;
+
+            const content = document.getElementById('detailContent');
+
+            let familyHTML = '';
+            if (person.spouses && person.spouses.length > 0) {
+                familyHTML += `
+                    <div style="margin-bottom: 15px;">
+                        <div style="font-weight: bold; color: #FFD700; margin-bottom: 10px;">💑 الزوج/الزوجة:</div>
+                        <div class="family-grid">
+                            ${person.spouses.map(s => `
+                                <div class="family-card">
+                                    <div class="family-name">${s.name}</div>
+                                    ${s.info ? `<div class="family-info">${s.info}</div>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            if (person.children && person.children.length > 0) {
+                familyHTML += `
+                    <div>
+                        <div style="font-weight: bold; color: #FFD700; margin-bottom: 10px;">👶 الأولاد:</div>
+                        <div class="family-grid">
+                            ${person.children.map(c => `
+                                <div class="family-card">
+                                    <div class="family-name">${c.name}</div>
+                                    ${c.info ? `<div class="family-info">${c.info}</div>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            let booksHTML = '';
+            if (person.books && person.books.length > 0) {
+                booksHTML = person.books.map(b => `
+                    <div class="book-card">
+                        <div class="book-title">📖 ${b.title}</div>
+                        <div class="book-author">المؤلف: ${b.author}</div>
+                    </div>
+                `).join('');
+            } else {
+                booksHTML = '<div style="color: #B0B0B0; text-align: center;">لا توجد كتب مسجلة</div>';
+            }
+
+            const sourcesHTML = person.sources.map(s => `
+                <div class="source-card">
+                    <div class="source-book">📚 ${s.book}</div>
+                    <div class="source-author">المؤلف: ${s.author}</div>
+                </div>
+            `).join('');
+
+            content.innerHTML = `
+                <div class="detail-avatar">${person.name[0]}</div>
+                <div class="detail-laquab">${person.laqab}</div>
+
+                <div class="info-section">
+                    <div class="section-header">
+                        <span class="section-header-icon">📋</span>
+                        <span class="section-header-title">المعلومات الأساسية</span>
+                        <div class="section-line"></div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">🎂</span>
+                        <span class="info-label">الميلاد:</span>
+                        <span class="info-value">${person.birth_date}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">⚰️</span>
+                        <span class="info-label">الوفاة:</span>
+                        <span class="info-value">${person.death_date}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">⏱️</span>
+                        <span class="info-label">العمر:</span>
+                        <span class="info-value">${typeof person.age === 'number' ? person.age + ' سنة' : person.age}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">📍</span>
+                        <span class="info-label">الميلاد:</span>
+                        <span class="info-value">${person.birthplace}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">🪦</span>
+                        <span class="info-label">الدفن:</span>
+                        <span class="info-value">${person.burial_place}</span>
+                    </div>
+                    ${person.imamate_period ? `
+                    <div class="info-row">
+                        <span class="info-icon">👑</span>
+                        <span class="info-label">الإمامة:</span>
+                        <span class="info-value">${person.imamate_period}</span>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="info-section">
+                    <div class="section-header">
+                        <span class="section-header-icon">👨‍👩‍👧‍👦</span>
+                        <span class="section-header-title">الوالدين</span>
+                        <div class="section-line"></div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">👤</span>
+                        <span class="info-label">الأب:</span>
+                        <span class="info-value">${person.father}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">👤</span>
+                        <span class="info-label">الأم:</span>
+                        <span class="info-value">${person.mother}</span>
+                    </div>
+                </div>
+
+                ${familyHTML ? `
+                <div class="info-section">
+                    <div class="section-header">
+                        <span class="section-header-icon">👨‍👩‍👧‍👦</span>
+                        <span class="section-header-title">العائلة</span>
+                        <div class="section-line"></div>
+                    </div>
+                    ${familyHTML}
+                </div>
+                ` : ''}
+
+                <div class="info-section">
+                    <div class="section-header">
+                        <span class="section-header-icon">📚</span>
+                        <span class="section-header-title">الكتب</span>
+                        <div class="section-line"></div>
+                    </div>
+                    ${booksHTML}
+                </div>
+
+                <div class="info-section">
+                    <div class="section-header">
+                        <span class="section-header-icon">📖</span>
+                        <span class="section-header-title">المصادر الشيعية</span>
+                        <div class="section-line"></div>
+                    </div>
+                    ${sourcesHTML}
+                </div>
+
+                <div class="info-section">
+                    <div class="section-header">
+                        <span class="section-header-icon">📝</span>
+                        <span class="section-header-title">نبذة</span>
+                        <div class="section-line"></div>
+                    </div>
+                    <div class="summary-text">${person.summary}</div>
+                </div>
+
+                <div class="info-section">
+                    <div class="section-header">
+                        <span class="section-header-icon">🕌</span>
+                        <span class="section-header-title">مكان الزيارة</span>
+                        <div class="section-line"></div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">📍</span>
+                        <span class="info-label">المكان:</span>
+                        <span class="info-value">${person.ziyarat}</span>
+                    </div>
+                </div>
+            `;
+
+            showScreen('detailScreen');
+        }
+
+        // التحميل الأولي
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('homeScreen').style.display = 'flex';
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
